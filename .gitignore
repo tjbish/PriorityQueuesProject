@@ -1,0 +1,28 @@
+# Windows build junk
+Thumbs.db
+.DS_Store
+
+# Build output
+build/
+out/
+*.o
+*.obj
+*.exe
+*.dll
+*.pdb
+*.ilk
+*.lib
+*.a
+
+# CMake generated files
+CMakeFiles/
+CMakeCache.txt
+cmake_install.cmake
+Makefile
+
+# IDE
+.vscode/
+.idea/
+
+# Results (optional: commit csv or not)
+results/*.csv
