@@ -252,40 +252,40 @@ void FibonacciHeap::PrintHeap()
     }
 }
 
-int main()
-{
-    std::cout << "Test Start" << std::endl;
-    FibonacciHeap testHeap;
-    testHeap.Insert(10);
-    testHeap.Insert(20);
-    testHeap.Insert(3);
-    testHeap.Insert(6);
-    testHeap.Insert(123);
-    testHeap.Insert(61);
-    testHeap.Insert(62);
-    testHeap.Insert(2);
-    testHeap.Insert(24);
-    testHeap.Insert(26);
-    testHeap.Insert(271);
-    testHeap.Insert(2372);
-    testHeap.Insert(241234);
-    testHeap.Insert(24124231);
-    testHeap.Insert(24);
-    testHeap.Insert(24124);
-    testHeap.Insert(2123);
-    testHeap.Insert(241);
-    testHeap.Insert(6122);
-    testHeap.Insert(2126);
-    testHeap.Insert(1322);
-    testHeap.Insert(21);
-    std::cout << "Insert End" << std::endl;
-    testHeap.PrintHeap();
-    std::cout << testHeap.FindMin()->Value << std::endl;
-    std::cout << testHeap.ExtractMin()->Value << std::endl;
-    std::cout << "Extracted Min" << std::endl;
-    testHeap.PrintHeap();
-    std::cout << std::endl;
-    std::cout << testHeap.FindMin()->Value << std::endl;
-    std::cout << "Test End" << std::endl;
+// int main()
+// {
+//     std::cout << "Test Start" << std::endl;
+//     FibonacciHeap testHeap;
+//     testHeap.Insert(10);
+//     testHeap.Insert(20);
+//     testHeap.Insert(3);
+//     testHeap.Insert(6);
+//     testHeap.Insert(123);
+//     testHeap.Insert(61);
+//     testHeap.Insert(62);
+//     testHeap.Insert(2);
+//     testHeap.Insert(24);
+//     testHeap.Insert(26);
+//     testHeap.Insert(271);
+//     testHeap.Insert(2372);
+//     testHeap.Insert(241234);
+//     testHeap.Insert(24124231);
+//     testHeap.Insert(24);
+//     testHeap.Insert(24124);
+//     testHeap.Insert(2123);
+//     testHeap.Insert(241);
+//     testHeap.Insert(6122);
+//     testHeap.Insert(2126);
+//     testHeap.Insert(1322);
+//     testHeap.Insert(21);
+//     std::cout << "Insert End" << std::endl;
+//     testHeap.PrintHeap();
+//     std::cout << testHeap.FindMin()->Value << std::endl;
+//     std::cout << testHeap.ExtractMin()->Value << std::endl;
+//     std::cout << "Extracted Min" << std::endl;
+//     testHeap.PrintHeap();
+//     std::cout << std::endl;
+//     std::cout << testHeap.FindMin()->Value << std::endl;
+//     std::cout << "Test End" << std::endl;
 
-}
+// }
