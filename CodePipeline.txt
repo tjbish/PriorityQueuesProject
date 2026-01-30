@@ -1,0 +1,35 @@
+                  (config: graphType, n/m, seed, algo, heapType)
+                                   |
+                                   v
++------------------+      builds      +------------------+
+|   GraphGen.hpp    |  ------------->  |     Graph g      |
+| (random/grid/etc) |                 | (adj list, V,E,w) |
++------------------+                 +------------------+
+                                   |
+                                   | choose heapType
+                                   v
+                         +----------------------+
+                         | Heap Implementation  |
+                         |  FibHeap or Pairing  |
+                         +----------------------+
+                                   |
+                                   | wrapped by
+                                   v
+                         +----------------------+
+                         |    MetricsWrapper    |
+                         | counts + times ops   |
+                         +----------------------+
+                                   |
+                                   | passed into
+                                   v
+                 +----------------------------------------+
+                 |  Algorithm (same code for both heaps)  |
+                 |  - Dijkstra OR Prim                    |
+                 |  - calls pq.insert/extractMin/decrease |
+                 +----------------------------------------+
+                                   |
+                                   v
+                     +------------------------------+
+                     | Results + Metrics Report     |
+                     | wall time, op counts, op ns  |
+                     +------------------------------+
