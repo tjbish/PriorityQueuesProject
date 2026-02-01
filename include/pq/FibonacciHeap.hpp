@@ -1,3 +1,7 @@
+#pragma once
+#include "IPriorityQueue.hpp"
+
+template <typename KeyT>
 class FibNode
 {
     public:
@@ -5,28 +9,39 @@ class FibNode
         FibNode* Child = nullptr;
         FibNode* Next = nullptr;
         FibNode* Prev = nullptr;
-        int Value;
+        KeyT Key;
+        int Vertex;
         int Degree;
-        FibNode(int val)
+        char Mark;
+        FibNode(KeyT k, int v)
         {
-            Value = val;
+            Key = k;
+            Vertex = v;
             Degree = 0;
+            Mark = 'w';
         }
 };
 
-class FibonacciHeap
+template <typename KeyT>
+class FibonacciHeap : public IPriorityQueue<KeyT>
 {
-    FibNode* MinNode = nullptr;
+    using Handle = void*;
+    FibNode<KeyT>* MinNode = nullptr;
     int Size = 0;
     public:
-        FibNode* CreateNode(int val);
-        void Insert(int val);
-        FibNode* FindMin();
-        void Union(FibNode* a, FibNode* b);
-        FibNode* ExtractMin();
+        FibNode<KeyT>* CreateNode(KeyT k, int v);
+        FibNode<KeyT>* FindMin();
+        void Union(FibNode<KeyT>* a, FibNode<KeyT>* b);
         void Consolidate();
-        void FibonacciLink(FibNode* child, FibNode* parent);
-        void DecreaseKey();
+        void FibonacciLink(FibNode<KeyT>* child, FibNode<KeyT>* parent);
         void PrintHeap();
+        void Cut(FibNode<KeyT>* child, FibNode<KeyT>* parent);
+        void CascadeCut(FibNode<KeyT>* curNode);
+        PQItem<KeyT> NodeToPQItem(FibNode<KeyT>* node);
+        //IPriorityQueue functions
+        bool empty() const override;
+        Handle insert(const KeyT &key, int vertex);
+        void decreaseKey(Handle h, const KeyT &newKey);
+        PQItem<KeyT> extractMin();
 };
 

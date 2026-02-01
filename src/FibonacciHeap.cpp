@@ -1,17 +1,22 @@
 #include "../include/pq/FibonacciHeap.hpp"
+#include "../include/pq/IpriorityQueue.hpp"
 #include <stdexcept>
 #include <cmath>
 #include <queue>
 #include <iostream>
 
-FibNode* FibonacciHeap::CreateNode(int val)
+using Handle = void*;
+
+template <typename KeyT>
+FibNode<KeyT>* FibonacciHeap<KeyT>::CreateNode(KeyT k, int v)
 {
-    return new FibNode(val);
+    return new FibNode(k, v);
 }
 
-void FibonacciHeap::Insert(int val)
+template <typename KeyT>
+Handle FibonacciHeap<KeyT>::insert(const KeyT &key, int vertex)
 {
-    FibNode* CurNode = CreateNode(val);
+    FibNode<KeyT>* CurNode = CreateNode(key, vertex);
     Size++;
     if (MinNode == nullptr)
     {
@@ -25,21 +30,24 @@ void FibonacciHeap::Insert(int val)
         CurNode->Next = MinNode;
         (MinNode->Prev)->Next = CurNode;
         MinNode->Prev = CurNode;
-        if (CurNode->Value < MinNode->Value)
+        if (CurNode->Key < MinNode->Key)
         {
             MinNode = CurNode;
         }
     }
+    return CurNode;
 }
 
-FibNode* FibonacciHeap::FindMin()
+template <typename KeyT>
+FibNode<KeyT>* FibonacciHeap<KeyT>::FindMin()
 {
     return MinNode;
 }
 
-void FibonacciHeap::Union(FibNode* a, FibNode* b)
+template <typename KeyT>
+void FibonacciHeap<KeyT>::Union(FibNode<KeyT>* a, FibNode<KeyT>* b)
 {
-    FibNode* temp;
+    FibNode<KeyT>* temp;
 
     (a->Prev)->Next = b;
     (b->Prev)->Next = a;
@@ -48,27 +56,37 @@ void FibonacciHeap::Union(FibNode* a, FibNode* b)
     b->Prev = temp;
 }
 
-FibNode* FibonacciHeap::ExtractMin()
+template <typename KeyT>
+PQItem<KeyT> FibonacciHeap<KeyT>::NodeToPQItem(FibNode<KeyT>* node)
+{
+    PQItem<KeyT> Item;
+    Item.key = node->Key;
+    Item.vertex = node->Vertex;
+    return Item;
+}
+
+template <typename KeyT>
+PQItem<KeyT> FibonacciHeap<KeyT>::extractMin()
 {
     //case empty heap
     if (MinNode == nullptr)
     {
-        return MinNode;
+        return NodeToPQItem(MinNode);
     }
-    FibNode* returnNode = MinNode;
+    FibNode<KeyT>* returnNode = MinNode;
     //case only element
     if (MinNode->Next == nullptr && MinNode->Child == nullptr)
     {
         MinNode = nullptr;
         Size--;
-        return returnNode;
+        return NodeToPQItem(returnNode);
     }
     //case need to place children in root layer
     if (MinNode->Child != nullptr)
     {
-        FibNode* startChild = MinNode->Child;
-        FibNode* curNode = MinNode->Child;
-        FibNode* nextNode;
+        FibNode<KeyT>* startChild = MinNode->Child;
+        FibNode<KeyT>* curNode = MinNode->Child;
+        FibNode<KeyT>* nextNode;
         do
         {
             nextNode = curNode->Next;
@@ -90,21 +108,21 @@ FibNode* FibonacciHeap::ExtractMin()
     MinNode = MinNode->Next;
     Size--;
     Consolidate();
-    return returnNode;
+    return NodeToPQItem(returnNode);
 }
 
-void FibonacciHeap::Consolidate()
+template <typename KeyT>
+void FibonacciHeap<KeyT>::Consolidate()
 {
     int ArraySize = (int)(log(Size)/log(2));
-    FibNode* arr[ArraySize+1];
+    FibNode<KeyT>* arr[ArraySize+1];
     for(int i = 0; i <= ArraySize; ++i)
     {
         arr[i] = nullptr;
     }
-    FibNode* curNode = MinNode;
-    FibNode* nextNode;
-    FibNode* temp;
-    FibNode* swapTemp;
+    FibNode<KeyT>* curNode = MinNode;
+    FibNode<KeyT>* temp;
+    FibNode<KeyT>* swapTemp;
     int degree;
     
     do
@@ -114,7 +132,7 @@ void FibonacciHeap::Consolidate()
         {
             //std::cout << "top of second loop" << std::endl;
             temp = arr[degree];
-            if (curNode->Value > temp->Value)
+            if (curNode->Key > temp->Key)
             {
                 swapTemp = curNode;
                 curNode = temp;
@@ -149,7 +167,7 @@ void FibonacciHeap::Consolidate()
                 arr[i]->Next = MinNode;
                 arr[i]->Prev = MinNode->Prev;
                 MinNode->Prev = arr[i];
-                if (arr[i]->Value < MinNode->Value)
+                if (arr[i]->Key < MinNode->Key)
                 {
                     MinNode = arr[i];
                 }
@@ -163,7 +181,7 @@ void FibonacciHeap::Consolidate()
             // {
             //     MinNode = arr[i];
             // }
-            // else if (arr[i]->Value < MinNode->Value)
+            // else if (arr[i]->Key < MinNode->Key)
             // {
             //     MinNode = arr[i];
             // }
@@ -171,7 +189,8 @@ void FibonacciHeap::Consolidate()
     }
 }
 
-void FibonacciHeap::FibonacciLink(FibNode* child, FibNode* parent)
+template <typename KeyT>
+void FibonacciHeap<KeyT>::FibonacciLink(FibNode<KeyT>* child, FibNode<KeyT>* parent)
 {
     (child->Prev)->Next = child->Next;
     (child->Next)->Prev = child->Prev;
@@ -189,17 +208,14 @@ void FibonacciHeap::FibonacciLink(FibNode* child, FibNode* parent)
     (parent->Child)->Prev = child;
     parent->Degree++;
 }
-void FibonacciHeap::DecreaseKey()
-{
 
-}
-
-void FibonacciHeap::PrintHeap()
+template <typename KeyT>
+void FibonacciHeap<KeyT>::PrintHeap()
 {
-    std::queue<FibNode*> PrintQueue;
-    FibNode* startPtr = MinNode;
-    FibNode* curPtr = MinNode;
-    FibNode* parentPtr;
+    std::queue<FibNode<KeyT>*> PrintQueue;
+    FibNode<KeyT>* startPtr = MinNode;
+    FibNode<KeyT>* curPtr = MinNode;
+    FibNode<KeyT>* parentPtr;
     do
     {
         if (curPtr == nullptr)
@@ -230,9 +246,9 @@ void FibonacciHeap::PrintHeap()
         {
             if (parentPtr->Parent != nullptr)
             {
-                std::cout << parentPtr->Parent->Value << ":";
+                std::cout << parentPtr->Parent->Key << ":";
             }
-            std::cout << parentPtr->Value << " ";
+            std::cout << parentPtr->Key << " ";
             if (parentPtr->Child != nullptr)
             {
                 curPtr = parentPtr->Child;
@@ -252,40 +268,98 @@ void FibonacciHeap::PrintHeap()
     }
 }
 
+template <typename KeyT>
+bool FibonacciHeap<KeyT>::empty() const
+{
+    return (Size == 0);
+}
+
+template <typename KeyT>
+void FibonacciHeap<KeyT>::Cut(FibNode<KeyT>* child, FibNode<KeyT>* parent)
+{
+    if (child == child->Next)
+    {
+        parent->Child = nullptr;
+    }
+
+    child->Prev->Next = child->Next;
+    child->Next->Prev = child->Prev;
+
+    if (child == parent->Child)
+    {
+        parent->Child = child->Next;
+    }
+
+    parent->Degree--;
+    (MinNode->Prev)->Next = child;
+    child->Next = MinNode;
+    child->Prev = MinNode->Prev;
+    MinNode->Prev = child;
+    child->Parent = nullptr;
+    child->Mark = 'b';
+}
+
+template <typename KeyT>
+void FibonacciHeap<KeyT>::CascadeCut(FibNode<KeyT>* curNode)
+{
+    FibNode<KeyT>* temp = curNode->Parent;
+    if (temp != nullptr)
+    {
+        if (temp->Mark == 'w')
+        {
+            temp->Mark = 'b';
+        }
+        else
+        {
+            Cut(curNode,temp);
+            CascadeCut(temp);
+        }
+    }
+}
+
+template <typename KeyT>
+void FibonacciHeap<KeyT>::decreaseKey(Handle h, const KeyT &newKey)
+{
+    FibNode<KeyT>* updateNode = (FibNode<KeyT>*)h;
+    updateNode->Key = newKey;
+    FibNode<KeyT>* Parent = updateNode->Parent;
+    if (Parent != nullptr && updateNode->Key < Parent->Key)
+    {
+        Cut(updateNode,Parent);
+        CascadeCut(Parent);
+    }
+    if (updateNode->Key < MinNode->Key)
+    {
+        MinNode = updateNode;
+    }
+}
+
 // int main()
 // {
 //     std::cout << "Test Start" << std::endl;
-//     FibonacciHeap testHeap;
-//     testHeap.Insert(10);
-//     testHeap.Insert(20);
-//     testHeap.Insert(3);
-//     testHeap.Insert(6);
-//     testHeap.Insert(123);
-//     testHeap.Insert(61);
-//     testHeap.Insert(62);
-//     testHeap.Insert(2);
-//     testHeap.Insert(24);
-//     testHeap.Insert(26);
-//     testHeap.Insert(271);
-//     testHeap.Insert(2372);
-//     testHeap.Insert(241234);
-//     testHeap.Insert(24124231);
-//     testHeap.Insert(24);
-//     testHeap.Insert(24124);
-//     testHeap.Insert(2123);
-//     testHeap.Insert(241);
-//     testHeap.Insert(6122);
-//     testHeap.Insert(2126);
-//     testHeap.Insert(1322);
-//     testHeap.Insert(21);
+//     FibonacciHeap<int> testHeap;
+//     testHeap.insert(1,1);
+//     testHeap.insert(2,2);
+//     testHeap.insert(3,3);
+//     testHeap.insert(4,4);
+//     testHeap.insert(5,5);
+//     testHeap.insert(6,6);
+//     testHeap.insert(7,7);
+//     testHeap.insert(8,8);
+//     testHeap.insert(9,9);
+//     testHeap.insert(10,10);
+//     testHeap.insert(11,11);
+//     testHeap.insert(12,12);
+//     Handle testDecrease = testHeap.insert(13,13);
 //     std::cout << "Insert End" << std::endl;
 //     testHeap.PrintHeap();
-//     std::cout << testHeap.FindMin()->Value << std::endl;
-//     std::cout << testHeap.ExtractMin()->Value << std::endl;
+//     std::cout << testHeap.FindMin()->Vertex << std::endl;
+//     std::cout << testHeap.extractMin().key << std::endl;
 //     std::cout << "Extracted Min" << std::endl;
 //     testHeap.PrintHeap();
 //     std::cout << std::endl;
-//     std::cout << testHeap.FindMin()->Value << std::endl;
+//     std::cout << "Testing decreaseKey" << std::endl;
+//     testHeap.decreaseKey(testDecrease, 1);
+//     testHeap.PrintHeap();
 //     std::cout << "Test End" << std::endl;
-
 // }
