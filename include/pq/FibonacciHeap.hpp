@@ -44,4 +44,3 @@ class FibonacciHeap : public IPriorityQueue<KeyT>
         void decreaseKey(Handle h, const KeyT &newKey);
         PQItem<KeyT> extractMin();
 };
-
