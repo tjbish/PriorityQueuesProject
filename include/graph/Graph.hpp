@@ -38,7 +38,7 @@ public:
   void addEdge(int u, int v, int w)
   {
     adjList[static_cast<std::size_t>(u)].push_back(Edge{v, w});
-    if (!directed)
+    if (!directed())
       adjList[static_cast<std::size_t>(v)].push_back(Edge{u, w});
   }
 

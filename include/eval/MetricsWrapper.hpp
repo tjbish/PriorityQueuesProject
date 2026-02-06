@@ -1,6 +1,6 @@
 #pragma once
 
-#include "pq\IPriorityQueue.hpp"
+#include "../pq/IPriorityQueue.hpp"
 #include <chrono>
 
 /*
