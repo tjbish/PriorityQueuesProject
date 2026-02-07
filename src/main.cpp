@@ -2,22 +2,14 @@
 #include "../include/algos/Prim.hpp"
 #include "../include/eval/MetricsWrapper.hpp"
 #include "../include/graph/GraphGen.hpp"
-
 #include "../include/pq/FibonacciHeap.hpp"
-#include "../include/pq/PairingHeap.hpp"
-// Define Item and ItemLess globally for PairingHeap usage
-struct Item {
-    int key;
-    int vertex;
-};
-struct ItemLess {
-    bool operator()(const Item &a, const Item &b) const { return a.key < b.key; }
-};
+#include "../include/pq/PairingHeapAdapter.hpp"
 
-
+#include <algorithm>
 #include <chrono>
 #include <fstream>
 #include <iostream>
+#include <limits>
 #include <string>
 #include <vector>
 
@@ -51,6 +43,29 @@ static void logCaseStart(std::ofstream &out, const std::string &graphName, const
     out << "  Algorithm: " << algoName << "\n";
 }
 
+static void logDijkstraResult(std::ofstream &out, const std::vector<int> &dist)
+{
+    out << "Result\n";
+    out << "  Type: Dijkstra\n";
+    out << "  DistCount: " << dist.size() << "\n";
+    out << "  DistSample: ";
+    const std::size_t sampleCount = dist.size() < 8 ? dist.size() : 8;
+    for (std::size_t i = 0; i < sampleCount; ++i)
+    {
+        out << dist[i];
+        if (i + 1 < sampleCount)
+            out << ", ";
+    }
+    out << "\n";
+}
+
+static void logPrimResult(std::ofstream &out, long long totalWeight)
+{
+    out << "Result\n";
+    out << "  Type: Prim\n";
+    out << "  TotalWeight: " << totalWeight << "\n";
+}
+
 template <typename WrappedPQ>
 static void logMetrics(std::ofstream &out, const WrappedPQ &pq, long long wallNs)
 {
@@ -62,7 +77,43 @@ static void logMetrics(std::ofstream &out, const WrappedPQ &pq, long long wallNs
     out << "  InsertTimeNs: " << pq.insertTimeNs() << "\n";
     out << "  ExtractMinTimeNs: " << pq.extractMinTimeNs() << "\n";
     out << "  DecreaseKeyTimeNs: " << pq.decreaseKeyTimeNs() << "\n";
-    out << "  Status: NOT_IMPLEMENTED\n";
+    out << "\n";
+}
+
+struct PerfSummary
+{
+    std::string graphName;
+    struct Entry
+    {
+        std::string heap;
+        std::string algo;
+        long long wallNs = 0;
+    };
+    std::vector<Entry> entries;
+};
+
+static void updateSummary(PerfSummary &s, const std::string &heap, const std::string &algo, long long wallNs)
+{
+    s.entries.push_back(PerfSummary::Entry{heap, algo, wallNs});
+}
+
+static void logSummary(std::ofstream &out, const std::vector<PerfSummary> &summaries)
+{
+    out << "Summary\n";
+    out << "-------\n";
+    for (const auto &s : summaries)
+    {
+        std::vector<PerfSummary::Entry> ranked = s.entries;
+        std::sort(ranked.begin(), ranked.end(),
+                  [](const PerfSummary::Entry &a, const PerfSummary::Entry &b)
+                  { return a.wallNs < b.wallNs; });
+        out << "Graph: " << s.graphName << "\n";
+        for (std::size_t i = 0; i < ranked.size(); ++i)
+        {
+            out << "  Rank " << (i + 1) << ": " << ranked[i].algo << " + " << ranked[i].heap
+                << " (" << ranked[i].wallNs << " ns)\n";
+        }
+    }
     out << "\n";
 }
 
@@ -71,6 +122,7 @@ static void logMetrics(std::ofstream &out, const WrappedPQ &pq, long long wallNs
 // for each algorithm (Dijsktra, Prim)
 // Run evaluation & log metrics
 
+// THE ABOVE STRUCTURE SHOULD PROVIDE 12 UNIQUE TESTING CASES FOR COMPARISON AND EVALUATION
 // THIS STRUCTURE SHOULD PROVIDE 12 UNIQUE TESTING CASES FOR COMPARISON AND EVALUATION
 int main()
 {
@@ -89,8 +141,12 @@ int main()
 
     logHeader(out);
 
+    std::vector<PerfSummary> summaries;
+    summaries.reserve(graphCases.size());
     for (const auto &gc : graphCases)
     {
+        PerfSummary summary;
+        summary.graphName = gc.name;
         Graph g = buildGraph(gc);
 
         for (int heapIndex = 0; heapIndex < 2; ++heapIndex)
@@ -113,62 +169,51 @@ int main()
                     auto t0 = std::chrono::high_resolution_clock::now();
                     if (useDijkstra)
                     {
-                        (void)dijkstra(g, 0, wrapped);
+                        const auto dist = dijkstra<int>(g, 0, wrapped);
+                        logDijkstraResult(out, dist);
                     }
                     else
                     {
-                        (void)primMST(g, wrapped);
+                        const auto total = primMST<int>(g, wrapped);
+                        logPrimResult(out, static_cast<long long>(total));
                     }
                     auto t1 = std::chrono::high_resolution_clock::now();
                     long long wallNs =
                         std::chrono::duration_cast<std::chrono::nanoseconds>(t1 - t0).count();
 
                     logMetrics(out, wrapped, wallNs);
+                    updateSummary(summary, heapName, algoName, wallNs);
                 }
                 else
                 {
-                    PairingHeap<Item, ItemLess> heap;
-                    std::vector<PairingHeap<Item, ItemLess>::handle_type> handles(g.numV(), nullptr);
-                    std::vector<int> key(g.numV(), std::numeric_limits<int>::max());
-                    std::vector<bool> inMST(g.numV(), false);
-
-                    // Insert all vertices
-                    for (int v = 0; v < g.numV(); v++) {
-                        if (v == 0) {
-                            key[v] = 0;
-                            handles[v] = heap.push(Item{0, v});
-                        } else {
-                            handles[v] = heap.push(Item{std::numeric_limits<int>::max(), v});
-                        }
-                    }
+                    PairingHeapAdapter<int> heap;
+                    MetricsWrapper<int, PairingHeapAdapter<int>> wrapped(heap);
 
                     auto t0 = std::chrono::high_resolution_clock::now();
-                    int totalWeight = 0;
-                    while (!heap.empty()) {
-                        Item cur = heap.top();
-                        heap.pop();
-                        int u = cur.vertex;
-                        if (inMST[u]) continue;
-                        inMST[u] = true;
-                        totalWeight += cur.key;
-                        for (const Edge &e : g.neighbors(u)) {
-                            int v = e.to;
-                            if (!inMST[v] && e.w < key[v]) {
-                                key[v] = e.w;
-                                heap.decrease_key(handles[v], Item{e.w, v});
-                            }
-                        }
+                    if (useDijkstra)
+                    {
+                        const auto dist = dijkstra<int>(g, 0, wrapped);
+                        logDijkstraResult(out, dist);
+                    }
+                    else
+                    {
+                        const auto total = primMST<int>(g, wrapped);
+                        logPrimResult(out, static_cast<long long>(total));
                     }
                     auto t1 = std::chrono::high_resolution_clock::now();
-                    long long wallNs = std::chrono::duration_cast<std::chrono::nanoseconds>(t1 - t0).count();
-                    out << "Results\n";
-                    out << "  WallTimeNs: " << wallNs << "\n";
-                    out << "  TotalWeight: " << totalWeight << "\n";
-                    out << "  Status: PAIRING_HEAP_DIRECT\n\n";
+                    long long wallNs =
+                        std::chrono::duration_cast<std::chrono::nanoseconds>(t1 - t0).count();
+
+                    logMetrics(out, wrapped, wallNs);
+                    updateSummary(summary, heapName, algoName, wallNs);
                 }
             }
         }
+
+        summaries.push_back(summary);
     }
+
+    logSummary(out, summaries);
 
     std::cout << "Results written to results.txt\n";
     return 0;

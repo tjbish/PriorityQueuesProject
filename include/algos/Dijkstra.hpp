@@ -1,19 +1,17 @@
 #pragma once
 
-#include "Graph.hpp"
-#include "IPriorityQueue.hpp"
+#include "../graph/Graph.hpp"
+#include "../pq/IPriorityQueue.hpp"
 #include <vector>
 #include <limits>
 
-
- //returns vector of shortest distances from source.
+// returns vector of shortest distances from source.
 
 template <typename KeyT>
 std::vector<KeyT> dijkstra(
-    const Graph& g,
+    const Graph &g,
     int source,
-    IPriorityQueue<KeyT>& pq
-)
+    IPriorityQueue<KeyT> &pq)
 {
     const KeyT INF = std::numeric_limits<KeyT>::max();
 
@@ -21,7 +19,7 @@ std::vector<KeyT> dijkstra(
     std::vector<KeyT> dist(n, INF);
     std::vector<typename IPriorityQueue<KeyT>::Handle> handles(n, nullptr);
 
-    //initialize
+    // initialize
     for (int v = 0; v < n; v++)
     {
         if (v == source)
@@ -44,7 +42,7 @@ std::vector<KeyT> dijkstra(
         if (cur.key == INF)
             break; // remaining vertices unreachable
 
-        for (const Edge& e : g.neighbors(u))
+        for (const Edge &e : g.neighbors(u))
         {
             int v = e.to;
             KeyT alt = dist[u] + e.w;

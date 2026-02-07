@@ -121,47 +121,44 @@ PQItem<KeyT> FibonacciHeap<KeyT>::extractMin()
     {
         throw std::runtime_error("extractMin() on empty heap");
     }
-    FibNode<KeyT> *returnNode = MinNode;
-    // case only element
-    if (MinNode->Next == MinNode && MinNode->Child == nullptr)
+    FibNode<KeyT> *z = MinNode;
+
+    // If z has children, splice the child list into the root list.
+    if (z->Child != nullptr)
     {
-        MinNode = nullptr;
-        Size--;
-        return NodeToPQItem(returnNode);
-    }
-    // case need to place children in root layer
-    if (MinNode->Child != nullptr)
-    {
-        FibNode<KeyT> *startChild = MinNode->Child;
-        FibNode<KeyT> *curNode = MinNode->Child;
-        FibNode<KeyT> *nextNode;
+        FibNode<KeyT> *child = z->Child;
+        FibNode<KeyT> *childCur = child;
         do
         {
-            nextNode = curNode->Next;
+            childCur->Parent = nullptr;
+            childCur = childCur->Next;
+        } while (childCur != child);
 
-            (MinNode->Prev)->Next = curNode;
-            curNode->Next = MinNode;
-            curNode->Prev = MinNode->Prev;
-            MinNode->Prev = curNode;
+        // Splice circular lists: (z->Prev <-> z) and (child->Prev <-> child)
+        FibNode<KeyT> *zPrev = z->Prev;
+        FibNode<KeyT> *childPrev = child->Prev;
 
-            curNode->Parent = nullptr;
-            curNode = nextNode;
-        } while (nextNode != startChild);
+        zPrev->Next = child;
+        child->Prev = zPrev;
 
-        (curNode->Prev)->Next = nullptr;
+        childPrev->Next = z;
+        z->Prev = childPrev;
     }
 
-    (MinNode->Prev)->Next = MinNode->Next;
-    (MinNode->Next)->Prev = MinNode->Prev;
+    // Remove z from root list.
+    z->Prev->Next = z->Next;
+    z->Next->Prev = z->Prev;
+
     Size--;
     if (Size == 0)
     {
         MinNode = nullptr;
-        return NodeToPQItem(returnNode);
+        return NodeToPQItem(z);
     }
-    MinNode = MinNode->Next;
+
+    MinNode = z->Next;
     Consolidate();
-    return NodeToPQItem(returnNode);
+    return NodeToPQItem(z);
 }
 
 template <typename KeyT>
@@ -171,66 +168,75 @@ void FibonacciHeap<KeyT>::Consolidate()
     {
         return;
     }
-    int ArraySize = (int)(log(Size) / log(2));
-    FibNode<KeyT> *arr[ArraySize + 1];
-    for (int i = 0; i <= ArraySize; ++i)
-    {
-        arr[i] = nullptr;
-    }
-    FibNode<KeyT> *curNode = MinNode;
-    FibNode<KeyT> *temp;
-    FibNode<KeyT> *swapTemp;
-    int degree;
+    const int maxDegree = static_cast<int>(std::log2(Size)) + 2;
+    std::vector<FibNode<KeyT> *> table(static_cast<std::size_t>(maxDegree), nullptr);
 
+    // Collect current roots to avoid iterator corruption while linking.
+    std::vector<FibNode<KeyT> *> roots;
+    FibNode<KeyT> *cur = MinNode;
     do
     {
-        degree = curNode->Degree;
-        while (arr[degree] != nullptr)
+        roots.push_back(cur);
+        cur = cur->Next;
+    } while (cur != MinNode);
+
+    // Detach each root into a single-node circular list.
+    for (FibNode<KeyT> *x : roots)
+    {
+        x->Prev = x;
+        x->Next = x;
+    }
+
+    for (FibNode<KeyT> *x : roots)
+    {
+        int d = x->Degree;
+        while (true)
         {
-            temp = arr[degree];
-            if (curNode->Key > temp->Key)
+            if (d >= static_cast<int>(table.size()))
             {
-                swapTemp = curNode;
-                curNode = temp;
-                temp = swapTemp;
+                table.resize(static_cast<std::size_t>(d) + 1, nullptr);
             }
-            if (temp == MinNode)
+            if (table[static_cast<std::size_t>(d)] == nullptr)
             {
-                MinNode = curNode;
+                table[static_cast<std::size_t>(d)] = x;
+                break;
             }
-            FibonacciLink(temp, curNode);
-            if (curNode->Next == curNode)
+
+            FibNode<KeyT> *y = table[static_cast<std::size_t>(d)];
+            table[static_cast<std::size_t>(d)] = nullptr;
+            if (x->Key > y->Key)
             {
-                MinNode = curNode;
+                FibNode<KeyT> *tmp = x;
+                x = y;
+                y = tmp;
             }
-            arr[degree] = nullptr;
-            degree++;
+            FibonacciLink(y, x);
+            d++;
         }
-        arr[degree] = curNode;
-        curNode = curNode->Next;
-    } while (curNode != MinNode);
+    }
 
     MinNode = nullptr;
-    for (int i = 0; i <= ArraySize; ++i)
+    for (FibNode<KeyT> *node : table)
     {
-        if (arr[i] != nullptr)
+        if (node == nullptr)
         {
-            arr[i]->Next = arr[i];
-            arr[i]->Prev = arr[i];
-            if (MinNode != nullptr)
+            continue;
+        }
+        node->Prev = node;
+        node->Next = node;
+        if (MinNode == nullptr)
+        {
+            MinNode = node;
+        }
+        else
+        {
+            node->Prev = MinNode->Prev;
+            node->Next = MinNode;
+            MinNode->Prev->Next = node;
+            MinNode->Prev = node;
+            if (node->Key < MinNode->Key)
             {
-                (MinNode->Prev)->Next = arr[i];
-                arr[i]->Next = MinNode;
-                arr[i]->Prev = MinNode->Prev;
-                MinNode->Prev = arr[i];
-                if (arr[i]->Key < MinNode->Key)
-                {
-                    MinNode = arr[i];
-                }
-            }
-            else
-            {
-                MinNode = arr[i];
+                MinNode = node;
             }
         }
     }

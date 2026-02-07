@@ -1,16 +1,15 @@
 #pragma once
 
-#include "Graph.hpp"
-#include "IPriorityQueue.hpp"
+#include "../graph/Graph.hpp"
+#include "../pq/IPriorityQueue.hpp"
 #include <vector>
 #include <limits>
 
 // returns total weight of the MST. Graph must be undirected and connected.
 template <typename KeyT>
 KeyT primMST(
-    const Graph& g,
-    IPriorityQueue<KeyT>& pq
-)
+    const Graph &g,
+    IPriorityQueue<KeyT> &pq)
 {
     const KeyT INF = std::numeric_limits<KeyT>::max();
 
@@ -19,7 +18,7 @@ KeyT primMST(
     std::vector<bool> inMST(n, false);
     std::vector<typename IPriorityQueue<KeyT>::Handle> handles(n, nullptr);
 
-    //start from vertex 0
+    // start from vertex 0
     for (int v = 0; v < n; v++)
     {
         if (v == 0)
@@ -46,7 +45,7 @@ KeyT primMST(
         inMST[u] = true;
         totalWeight += cur.key;
 
-        for (const Edge& e : g.neighbors(u))
+        for (const Edge &e : g.neighbors(u))
         {
             int v = e.to;
             if (!inMST[v] && e.w < key[v])
