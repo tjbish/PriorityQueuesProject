@@ -1,0 +1,170 @@
+PriorityQueuesProject Benchmark Log
+-----------------------------------
+Test Case
+  Graph: Sparse
+  Heap: FibonacciHeap
+  Algorithm: Dijkstra
+Results
+  WallTimeNs: 400
+  InsertCount: 0
+  ExtractMinCount: 0
+  DecreaseKeyCount: 0
+  InsertTimeNs: 0
+  ExtractMinTimeNs: 0
+  DecreaseKeyTimeNs: 0
+  Status: NOT_IMPLEMENTED
+
+Test Case
+  Graph: Sparse
+  Heap: FibonacciHeap
+  Algorithm: Prim
+Results
+  WallTimeNs: 200
+  InsertCount: 0
+  ExtractMinCount: 0
+  DecreaseKeyCount: 0
+  InsertTimeNs: 0
+  ExtractMinTimeNs: 0
+  DecreaseKeyTimeNs: 0
+  Status: NOT_IMPLEMENTED
+
+Test Case
+  Graph: Sparse
+  Heap: PairingHeap
+  Algorithm: Dijkstra
+Results
+  WallTimeNs: 0
+  InsertCount: 0
+  ExtractMinCount: 0
+  DecreaseKeyCount: 0
+  InsertTimeNs: 0
+  ExtractMinTimeNs: 0
+  DecreaseKeyTimeNs: 0
+  Status: NOT_IMPLEMENTED
+
+Test Case
+  Graph: Sparse
+  Heap: PairingHeap
+  Algorithm: Prim
+Results
+  WallTimeNs: 100
+  InsertCount: 0
+  ExtractMinCount: 0
+  DecreaseKeyCount: 0
+  InsertTimeNs: 0
+  ExtractMinTimeNs: 0
+  DecreaseKeyTimeNs: 0
+  Status: NOT_IMPLEMENTED
+
+Test Case
+  Graph: Dense
+  Heap: FibonacciHeap
+  Algorithm: Dijkstra
+Results
+  WallTimeNs: 200
+  InsertCount: 0
+  ExtractMinCount: 0
+  DecreaseKeyCount: 0
+  InsertTimeNs: 0
+  ExtractMinTimeNs: 0
+  DecreaseKeyTimeNs: 0
+  Status: NOT_IMPLEMENTED
+
+Test Case
+  Graph: Dense
+  Heap: FibonacciHeap
+  Algorithm: Prim
+Results
+  WallTimeNs: 100
+  InsertCount: 0
+  ExtractMinCount: 0
+  DecreaseKeyCount: 0
+  InsertTimeNs: 0
+  ExtractMinTimeNs: 0
+  DecreaseKeyTimeNs: 0
+  Status: NOT_IMPLEMENTED
+
+Test Case
+  Graph: Dense
+  Heap: PairingHeap
+  Algorithm: Dijkstra
+Results
+  WallTimeNs: 100
+  InsertCount: 0
+  ExtractMinCount: 0
+  DecreaseKeyCount: 0
+  InsertTimeNs: 0
+  ExtractMinTimeNs: 0
+  DecreaseKeyTimeNs: 0
+  Status: NOT_IMPLEMENTED
+
+Test Case
+  Graph: Dense
+  Heap: PairingHeap
+  Algorithm: Prim
+Results
+  WallTimeNs: 0
+  InsertCount: 0
+  ExtractMinCount: 0
+  DecreaseKeyCount: 0
+  InsertTimeNs: 0
+  ExtractMinTimeNs: 0
+  DecreaseKeyTimeNs: 0
+  Status: NOT_IMPLEMENTED
+
+Test Case
+  Graph: HeavilyUnordered
+  Heap: FibonacciHeap
+  Algorithm: Dijkstra
+Results
+  WallTimeNs: 100
+  InsertCount: 0
+  ExtractMinCount: 0
+  DecreaseKeyCount: 0
+  InsertTimeNs: 0
+  ExtractMinTimeNs: 0
+  DecreaseKeyTimeNs: 0
+  Status: NOT_IMPLEMENTED
+
+Test Case
+  Graph: HeavilyUnordered
+  Heap: FibonacciHeap
+  Algorithm: Prim
+Results
+  WallTimeNs: 0
+  InsertCount: 0
+  ExtractMinCount: 0
+  DecreaseKeyCount: 0
+  InsertTimeNs: 0
+  ExtractMinTimeNs: 0
+  DecreaseKeyTimeNs: 0
+  Status: NOT_IMPLEMENTED
+
+Test Case
+  Graph: HeavilyUnordered
+  Heap: PairingHeap
+  Algorithm: Dijkstra
+Results
+  WallTimeNs: 100
+  InsertCount: 0
+  ExtractMinCount: 0
+  DecreaseKeyCount: 0
+  InsertTimeNs: 0
+  ExtractMinTimeNs: 0
+  DecreaseKeyTimeNs: 0
+  Status: NOT_IMPLEMENTED
+
+Test Case
+  Graph: HeavilyUnordered
+  Heap: PairingHeap
+  Algorithm: Prim
+Results
+  WallTimeNs: 100
+  InsertCount: 0
+  ExtractMinCount: 0
+  DecreaseKeyCount: 0
+  InsertTimeNs: 0
+  ExtractMinTimeNs: 0
+  DecreaseKeyTimeNs: 0
+  Status: NOT_IMPLEMENTED
+

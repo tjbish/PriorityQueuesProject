@@ -5,10 +5,7 @@
 #include <vector>
 #include <limits>
 
-
- //returns total weight of the MST.
- //graph must be undirected and connected.
-
+// returns total weight of the MST. Graph must be undirected and connected.
 template <typename KeyT>
 KeyT primMST(
     const Graph& g,
@@ -59,6 +56,5 @@ KeyT primMST(
             }
         }
     }
-
     return totalWeight;
 }

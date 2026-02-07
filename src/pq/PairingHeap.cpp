@@ -1,4 +1,4 @@
-#include "pairingheap.hpp"
+#include "../include/pq/PairingHeap.hpp"
 #include <iostream>
 
 int main() {
