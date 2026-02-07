@@ -2,8 +2,18 @@
 #include "../include/algos/Prim.hpp"
 #include "../include/eval/MetricsWrapper.hpp"
 #include "../include/graph/GraphGen.hpp"
+
 #include "../include/pq/FibonacciHeap.hpp"
-#include "../include/pq/PairingHeapAdapter.hpp"
+#include "../include/pq/PairingHeap.hpp"
+// Define Item and ItemLess globally for PairingHeap usage
+struct Item {
+    int key;
+    int vertex;
+};
+struct ItemLess {
+    bool operator()(const Item &a, const Item &b) const { return a.key < b.key; }
+};
+
 
 #include <chrono>
 #include <fstream>
@@ -117,23 +127,44 @@ int main()
                 }
                 else
                 {
-                    PairingHeapAdapter<int> heap;
-                    MetricsWrapper<int, PairingHeapAdapter<int>> wrapped(heap);
+                    PairingHeap<Item, ItemLess> heap;
+                    std::vector<PairingHeap<Item, ItemLess>::handle_type> handles(g.numV(), nullptr);
+                    std::vector<int> key(g.numV(), std::numeric_limits<int>::max());
+                    std::vector<bool> inMST(g.numV(), false);
+
+                    // Insert all vertices
+                    for (int v = 0; v < g.numV(); v++) {
+                        if (v == 0) {
+                            key[v] = 0;
+                            handles[v] = heap.push(Item{0, v});
+                        } else {
+                            handles[v] = heap.push(Item{std::numeric_limits<int>::max(), v});
+                        }
+                    }
 
                     auto t0 = std::chrono::high_resolution_clock::now();
-                    if (useDijkstra)
-                    {
-                        (void)dijkstra(g, 0, wrapped);
-                    }
-                    else
-                    {
-                        (void)primMST(g, wrapped);
+                    int totalWeight = 0;
+                    while (!heap.empty()) {
+                        Item cur = heap.top();
+                        heap.pop();
+                        int u = cur.vertex;
+                        if (inMST[u]) continue;
+                        inMST[u] = true;
+                        totalWeight += cur.key;
+                        for (const Edge &e : g.neighbors(u)) {
+                            int v = e.to;
+                            if (!inMST[v] && e.w < key[v]) {
+                                key[v] = e.w;
+                                heap.decrease_key(handles[v], Item{e.w, v});
+                            }
+                        }
                     }
                     auto t1 = std::chrono::high_resolution_clock::now();
-                    long long wallNs =
-                        std::chrono::duration_cast<std::chrono::nanoseconds>(t1 - t0).count();
-
-                    logMetrics(out, wrapped, wallNs);
+                    long long wallNs = std::chrono::duration_cast<std::chrono::nanoseconds>(t1 - t0).count();
+                    out << "Results\n";
+                    out << "  WallTimeNs: " << wallNs << "\n";
+                    out << "  TotalWeight: " << totalWeight << "\n";
+                    out << "  Status: PAIRING_HEAP_DIRECT\n\n";
                 }
             }
         }
