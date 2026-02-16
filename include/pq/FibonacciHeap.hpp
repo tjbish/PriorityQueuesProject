@@ -348,7 +348,7 @@ void FibonacciHeap<KeyT>::Cut(FibNode<KeyT> *child, FibNode<KeyT> *parent)
     child->Prev = MinNode->Prev;
     MinNode->Prev = child;
     child->Parent = nullptr;
-    child->Mark = 'b';
+    child->Mark = 'w';
 }
 
 template <typename KeyT>
