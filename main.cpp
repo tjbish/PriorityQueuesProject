@@ -1,9 +1,9 @@
-#include "../include/algos/Dijkstra.hpp"
-#include "../include/algos/Prim.hpp"
-#include "../include/eval/MetricsWrapper.hpp"
-#include "../include/graph/GraphGen.hpp"
-#include "../include/pq/FibonacciHeap.hpp"
-#include "../include/pq/PairingHeapAdapter.hpp"
+#include "include/algos/Dijkstra.hpp"
+#include "include/algos/Prim.hpp"
+#include "include/eval/MetricsWrapper.hpp"
+#include "include/graph/GraphGen.hpp"
+#include "include/pq/FibonacciHeap.hpp"
+#include "include/pq/PairingHeapAdapter.hpp"
 
 #include <algorithm>
 #include <chrono>
