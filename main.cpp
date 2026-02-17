@@ -122,7 +122,6 @@ static void logSummary(std::ofstream &out, const std::vector<PerfSummary> &summa
 // for each algorithm (Dijsktra, Prim)
 // Run evaluation & log metrics
 
-// THE ABOVE STRUCTURE SHOULD PROVIDE 12 UNIQUE TESTING CASES FOR COMPARISON AND EVALUATION
 // THIS STRUCTURE SHOULD PROVIDE 12 UNIQUE TESTING CASES FOR COMPARISON AND EVALUATION
 int main()
 {
