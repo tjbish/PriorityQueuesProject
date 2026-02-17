@@ -118,41 +118,37 @@ Generators in `include/graph/GraphGen.hpp` include:
 
 ## Build and Run
 
-## Important include-path note
+Build from the repository root (`PriorityQueuesProject/`), where `main.cpp` and `include/` are located.
 
-`main.cpp` currently includes headers using paths like:
-
-```cpp
-#include "../include/algos/Dijkstra.hpp"
-```
-
-Because of that, compile from a subdirectory where `../include` resolves correctly (example: `build/` under repo root), or adjust include directives before compiling from root.
-
-### Option A: Build from a `build` directory (no source edits)
+### Option A: GCC (g++)
 
 ```powershell
-mkdir build
-cd build
-g++ -std=c++17 -O2 -I../include ../main.cpp -o pqbench
-./pqbench
+g++ -std=c++17 -O2 -I. main.cpp -o pq_bench
+./pq_bench
 ```
 
-### Option B: Build with Clang from `build`
+### Option B: Clang (clang++)
 
 ```powershell
-mkdir build
-cd build
-clang++ -std=c++17 -O2 -I../include ../main.cpp -o pqbench
-./pqbench
+clang++ -std=c++17 -O2 -I. main.cpp -o pq_bench
+./pq_bench
 ```
 
-Expected output message:
+### Option C: Run existing executable
+
+If `pq_bench.exe` is already present, you can run:
+
+```powershell
+./pq_bench.exe
+```
+
+Expected console output:
 
 ```text
 Results written to results.txt
 ```
 
-When running from `build`, output lands in `build/results.txt`.
+The output file is created in your current working directory.
 
 ## Output Format
 
@@ -203,7 +199,7 @@ This improves fairness of direct comparisons.
 
 ## Known Caveats
 
-- The current include style in `main.cpp` assumes `../include/...` resolution.
+- Build commands assume you run them from the repository root.
 - `results.txt` currently tracks timing and operation counts, but not memory usage.
 - Benchmarks are sensitive to machine load, compiler choice, and optimization flags; compare trends across multiple runs.
 
