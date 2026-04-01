@@ -1,0 +1,218 @@
+PriorityQueuesProject Benchmark Log
+-----------------------------------
+Test Case
+  Graph: Sparse
+  Heap: FibonacciHeap
+  Algorithm: Dijkstra
+Result
+  Type: Dijkstra
+  DistCount: 200
+  DistSample: 0, 25, 66, 27, 66, 71, 33, 24
+Results
+  WallTimeNs: 479900
+  InsertCount: 200
+  ExtractMinCount: 200
+  DecreaseKeyCount: 223
+  InsertTimeNs: 21000
+  ExtractMinTimeNs: 362000
+  DecreaseKeyTimeNs: 24500
+
+Test Case
+  Graph: Sparse
+  Heap: FibonacciHeap
+  Algorithm: Prim
+Result
+  Type: Prim
+  TotalWeight: 3589
+Results
+  WallTimeNs: 437300
+  InsertCount: 200
+  ExtractMinCount: 200
+  DecreaseKeyCount: 276
+  InsertTimeNs: 21200
+  ExtractMinTimeNs: 326000
+  DecreaseKeyTimeNs: 24100
+
+Test Case
+  Graph: Sparse
+  Heap: PairingHeap
+  Algorithm: Dijkstra
+Result
+  Type: Dijkstra
+  DistCount: 200
+  DistSample: 0, 25, 66, 27, 66, 71, 33, 24
+Results
+  WallTimeNs: 194200
+  InsertCount: 200
+  ExtractMinCount: 200
+  DecreaseKeyCount: 222
+  InsertTimeNs: 20900
+  ExtractMinTimeNs: 103200
+  DecreaseKeyTimeNs: 17700
+
+Test Case
+  Graph: Sparse
+  Heap: PairingHeap
+  Algorithm: Prim
+Result
+  Type: Prim
+  TotalWeight: 3589
+Results
+  WallTimeNs: 198900
+  InsertCount: 200
+  ExtractMinCount: 200
+  DecreaseKeyCount: 274
+  InsertTimeNs: 19200
+  ExtractMinTimeNs: 91900
+  DecreaseKeyTimeNs: 22200
+
+Test Case
+  Graph: Dense
+  Heap: FibonacciHeap
+  Algorithm: Dijkstra
+Result
+  Type: Dijkstra
+  DistCount: 200
+  DistSample: 0, 8, 7, 6, 5, 10, 7, 8
+Results
+  WallTimeNs: 533600
+  InsertCount: 200
+  ExtractMinCount: 200
+  DecreaseKeyCount: 603
+  InsertTimeNs: 20600
+  ExtractMinTimeNs: 322800
+  DecreaseKeyTimeNs: 40600
+
+Test Case
+  Graph: Dense
+  Heap: FibonacciHeap
+  Algorithm: Prim
+Result
+  Type: Prim
+  TotalWeight: 342
+Results
+  WallTimeNs: 677800
+  InsertCount: 200
+  ExtractMinCount: 200
+  DecreaseKeyCount: 772
+  InsertTimeNs: 19600
+  ExtractMinTimeNs: 348800
+  DecreaseKeyTimeNs: 55700
+
+Test Case
+  Graph: Dense
+  Heap: PairingHeap
+  Algorithm: Dijkstra
+Result
+  Type: Dijkstra
+  DistCount: 200
+  DistSample: 0, 8, 7, 6, 5, 10, 7, 8
+Results
+  WallTimeNs: 321600
+  InsertCount: 200
+  ExtractMinCount: 200
+  DecreaseKeyCount: 605
+  InsertTimeNs: 19900
+  ExtractMinTimeNs: 112300
+  DecreaseKeyTimeNs: 47800
+
+Test Case
+  Graph: Dense
+  Heap: PairingHeap
+  Algorithm: Prim
+Result
+  Type: Prim
+  TotalWeight: 342
+Results
+  WallTimeNs: 434000
+  InsertCount: 200
+  ExtractMinCount: 200
+  DecreaseKeyCount: 768
+  InsertTimeNs: 19900
+  ExtractMinTimeNs: 106200
+  DecreaseKeyTimeNs: 62900
+
+Test Case
+  Graph: HeavilyUnordered
+  Heap: FibonacciHeap
+  Algorithm: Dijkstra
+Result
+  Type: Dijkstra
+  DistCount: 200
+  DistSample: 0, 1114, 1445, 1854, 736, 34, 2498, 717
+Results
+  WallTimeNs: 496500
+  InsertCount: 200
+  ExtractMinCount: 200
+  DecreaseKeyCount: 443
+  InsertTimeNs: 20000
+  ExtractMinTimeNs: 357900
+  DecreaseKeyTimeNs: 36700
+
+Test Case
+  Graph: HeavilyUnordered
+  Heap: FibonacciHeap
+  Algorithm: Prim
+Result
+  Type: Prim
+  TotalWeight: 91232
+Results
+  WallTimeNs: 517800
+  InsertCount: 200
+  ExtractMinCount: 200
+  DecreaseKeyCount: 536
+  InsertTimeNs: 20300
+  ExtractMinTimeNs: 342100
+  DecreaseKeyTimeNs: 43300
+
+Test Case
+  Graph: HeavilyUnordered
+  Heap: PairingHeap
+  Algorithm: Dijkstra
+Result
+  Type: Dijkstra
+  DistCount: 200
+  DistSample: 0, 1114, 1445, 1854, 736, 34, 2498, 717
+Results
+  WallTimeNs: 241100
+  InsertCount: 200
+  ExtractMinCount: 200
+  DecreaseKeyCount: 443
+  InsertTimeNs: 19900
+  ExtractMinTimeNs: 110000
+  DecreaseKeyTimeNs: 31100
+
+Test Case
+  Graph: HeavilyUnordered
+  Heap: PairingHeap
+  Algorithm: Prim
+Result
+  Type: Prim
+  TotalWeight: 91232
+Results
+  WallTimeNs: 269900
+  InsertCount: 200
+  ExtractMinCount: 200
+  DecreaseKeyCount: 536
+  InsertTimeNs: 19200
+  ExtractMinTimeNs: 97900
+  DecreaseKeyTimeNs: 40500
+
+Summary
+-------
+Graph: Sparse
+  Rank 1: Dijkstra + PairingHeap (194200 ns)
+  Rank 2: Prim + PairingHeap (198900 ns)
+  Rank 3: Prim + FibonacciHeap (437300 ns)
+  Rank 4: Dijkstra + FibonacciHeap (479900 ns)
+Graph: Dense
+  Rank 1: Dijkstra + PairingHeap (321600 ns)
+  Rank 2: Prim + PairingHeap (434000 ns)
+  Rank 3: Dijkstra + FibonacciHeap (533600 ns)
+  Rank 4: Prim + FibonacciHeap (677800 ns)
+Graph: HeavilyUnordered
+  Rank 1: Dijkstra + PairingHeap (241100 ns)
+  Rank 2: Prim + PairingHeap (269900 ns)
+  Rank 3: Dijkstra + FibonacciHeap (496500 ns)
+  Rank 4: Prim + FibonacciHeap (517800 ns)
+
